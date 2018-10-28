@@ -28,15 +28,29 @@ public class JarReadTestMain {
 	public static void main(String[] args) throws Exception {
 		if (flag) System.out.println(">>>>> " + ClassUtils.getFileLine());
 		
-		if (flag) test01(args);
+		if (!flag) test01(args);
 		if (flag) test02(args);
-		if (flag) test03(args);
+		if (!flag) test03(args);
 	}
 	
 	///////////////////////////////////////////////////////////////////////////
 
 	private static void test01(String[] args) throws Exception {
 		if (flag) System.out.println(">>>>> " + ClassUtils.getFileLine());
+		
+		if (!flag) {
+			//Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("META-INF");
+			//Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("lib");
+			Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("lib");
+			//Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("data");
+			//Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("data/03.MidPattern.txt");
+			//Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("org");
+			//Enumeration<URL> urls = Thread.currentThread().getContextClassLoader().getResources("org/tain");
+			while (urls.hasMoreElements()) {
+				URL url = urls.nextElement();
+				if (flag) System.out.println(">>>>> " + url.getPath());
+			}
+		}
 		
 		if (!flag) {
 			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("/data/03.MidPattern.txt");
@@ -124,11 +138,15 @@ public class JarReadTestMain {
 			}
 		}
 		
-		if (!flag) {
+		if (flag) {
+			// TODO-KANG-20181028: be very important to you.
 			JarFile jarFile = new JarFile("./lib/MidPattern01.jar");
 			Enumeration<JarEntry> entries = jarFile.entries();
 			while (entries.hasMoreElements()) {
 				JarEntry entry = entries.nextElement();
+				if (!entry.getName().startsWith("lib"))
+					continue;
+				
 				if (flag) System.out.println(">>>>> entry: " + entry.getName());
 			}
 		}
